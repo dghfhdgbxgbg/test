@@ -36,24 +36,35 @@ app = Client("test", api_id=API_ID, api_hash=API_HASH, session_string=SESS)
 
 ass = PyTgCalls(app)
 
-
-
-
 @app.on_message(filters.command("play", prefixes=["/", "!"]))
 async def play_command(client: Client, message):
     try:
         song_title = message.text.split(" ", 1)[1] if len(message.text.split(" ")) > 1 else None
+        if not song_title:
+            await message.reply("Please provide a song title!")
+            return
         song_url = f"http://3.6.210.108:5000/download?query={song_title}"
         response = requests.get(song_url)
-        data = response.json()
-        print(data)
-        #await ass.join_group_call(message.chat.id, stream)
+        if response.status_code != 200:
+            await message.reply("Error retrieving song data!")
+            return
+        
+        data = response.json()  
+        print(data)  
+        # Example: await ass.join_group_call(message.chat.id, stream)
+
     except KeyError as e:
-        pass
+        await message.reply("Key error encountered while processing the request.")
+        print(f"KeyError: {e}")
     except ValueError as e:
-        pass
-    except PeerIdInvalid:
-        pass
+        await message.reply("Value error encountered while processing the request.")
+        print(f"ValueError: {e}")
+    except requests.exceptions.RequestException as e:
+        await message.reply("Request failed, please try again later.")
+        print(f"RequestException: {e}")
+    except PeerIdInvalid as e:
+        await message.reply("Invalid peer ID.")
+        print(f"PeerIdInvalid: {e}")
 
         
 
