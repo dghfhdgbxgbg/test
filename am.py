@@ -45,9 +45,7 @@ async def play_command(client: Client, message):
         if not song_title:
             await message.reply("Please provide a song title!")
             return
-
         song_url = f"http://3.6.210.108:5000/download?query={song_title}"
-
         async with aiohttp.ClientSession() as session:
             async with session.get(song_url) as response:
                 if response.status != 200:
@@ -56,8 +54,7 @@ async def play_command(client: Client, message):
                 data = await response.json()
 
                 if 'links' in data and len(data['links']) > 0:
-                    for link in data['links']:
-                        await message.reply(f"Link: {link['url']}")
+                    await message.reply(f"Link 1: {data['links'][0]['url']}")
                 else:
                     await message.reply("No links found in the response.")
     except aiohttp.ClientError as e:
@@ -66,9 +63,6 @@ async def play_command(client: Client, message):
     except Exception as e:
         logging.error(f"Unexpected error: {e}")
         await message.reply("An unexpected error occurred.")
-
-
-        
 
 
 app.run()
