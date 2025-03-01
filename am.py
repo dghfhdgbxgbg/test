@@ -45,7 +45,7 @@ async def play_command(client: Client, message: Message):
                         )
                     with open("url.txt", "w", encoding="utf-8") as file:
                         file.write(stream_url)
-                    ok = await  message.reply_document(chat_id=PLISTS, document="url.txt", caption=f"ɢʀᴏᴜᴘ")
+                    ok = await  message.reply_document(document="url.txt", caption=f"ɢʀᴏᴜᴘ")
                 else:
                     await message.reply("No links found in the response.")
 
