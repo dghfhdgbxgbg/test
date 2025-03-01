@@ -44,6 +44,7 @@ ass = PyTgCalls(app)
 
 @app.on_message(filters.command("play", prefixes=["/", "!"]))
 async def play_command(client: Client, message):
+    await message.delete()
     try:
         song_title = message.text.split(" ", 1)[1] if len(message.text.split(" ")) > 1 else None
         if not song_title:
