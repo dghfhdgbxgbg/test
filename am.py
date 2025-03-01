@@ -70,7 +70,7 @@ async def play_command(client: Client, message):
         pass
     except PeerIdInvalid as e:
         await message.reply("Invalid peer ID.")
-       pass
+        pass
 
         
 
