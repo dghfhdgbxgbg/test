@@ -22,36 +22,30 @@ app = Client("test", api_id=API_ID, api_hash=API_HASH, session_string=SESS)
 # Initialize PyTgCalls
 ass = PyTgCalls(app)
 
-@app.on_message(filters.command("download", prefixes=["/", "!"]))
-async def download_audio(client: Client, message: Message):
-    await message.delete()
+@app.on_message(filters.command("song"))
+async def song_dill(client, message):
     try:
-        # Extract the audio URL from the command
-        song_url = message.text.split(" ", 1)[1] if len(message.text.split(" ")) > 1 else None
-        if not song_url:
-            await message.reply("Please provide a valid audio URL!")
+        song_title = message.text.split(" ", 1)[1] if len(message.text.split(" ")) > 1 else None
+        if song_title is None:
+            await message.reply("Please provide a song title after the command.")
             return
-        file_name = "audio.mp4"
-        async with aiohttp.ClientSession() as session:
-            async with session.get(song_url) as response:
-                if response.status != 200:
-                    await message.reply("Error downloading the audio!")
-                    return
-                with open(file_name, "wb") as f:
-                    while True:
-                        chunk = await response.content.read(1024)
-                        if not chunk:
-                            break
-                        f.write(chunk)
-                
-                await message.reply_document(document=file_name, caption="Here is your downloaded audio!")
-
-        os.remove(file_name)
-
+        api_url = f"http://3.6.210.108:5000/download?query={song_title}"
+        response = requests.get(api_url)
+        data = response.json()
+        if data and "links" in data:
+            links = data["links"]
+            download_link = links[0]["url"]
+            await message.reply("Downloading the song... Please wait.")
+            file_response = requests.get(download_link)
+            file_path = "song.m4a"
+            with open(file_path, "wb") as file:
+                file.write(file_response.content)
+            await message.reply_document(file_path, caption="Here is your song!")
+        else:
+            await message.reply("Could not find any song data. Please try again later.")
+    
     except Exception as e:
-        logging.error(f"Error occurred: {str(e)}")
         await message.reply(f"An error occurred: {str(e)}")
-
 
 
 @app.on_message(filters.command("play", prefixes=["/", "!"]))
