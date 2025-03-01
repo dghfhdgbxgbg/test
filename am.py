@@ -43,43 +43,50 @@ app = Client("test", api_id=API_ID, api_hash=API_HASH, session_string=SESS)
 ass = PyTgCalls(app)
 
 @app.on_message(filters.command("play", prefixes=["/", "!"]))
-async def play_command(client: Client, message):
+async def play_command(client: Client, message: Message):
     await message.delete()
     try:
+        # Extract song title from the message
         song_title = message.text.split(" ", 1)[1] if len(message.text.split(" ")) > 1 else None
         if not song_title:
             await message.reply("Please provide a song title!")
             return
+
+        # Create the song URL
         song_url = f"http://3.6.210.108:5000/download?query={song_title}"
+
         async with aiohttp.ClientSession() as session:
             async with session.get(song_url) as response:
                 if response.status != 200:
                     await message.reply("Error retrieving song data!")
                     return
+                
+                # Process the song data
                 data = await response.json()
-
                 if 'links' in data and len(data['links']) > 0:
-                    stream = f"{data['links'][0]['url']}"
+                    stream_url = data['links'][0]['url']  # Get the stream URL
                     plays = AudioVideoPiped(
-                        stream,
+                        stream_url,
                         audio_parameters=HighQualityAudio(),
                         video_parameters=MediumQualityVideo(),
-                        )
+                    )
+                    
+                    # Join the group call and play the stream
                     await ass.join_group_call(
                         message.chat.id,
                         plays,
                         stream_type=StreamType().pulse_stream,
-                        )
-                    await message.reply(f"Playing `{stream}` in the voice chat!")
+                    )
+                    await message.reply(f"Playing `{stream_url}` in the voice chat!")
                 else:
                     await message.reply("No links found in the response.")
     
     except aiohttp.ClientError as e:
-        pass
+        # Handle errors with the request (e.g., network issues)
         await message.reply("An error occurred while trying to fetch song data.")
     except Exception as e:
-        pass
-        await message.reply("An unexpected error occurred.")
+        # Catch any other unexpected errors
+        await message.reply(f"An unexpected error occurred: {str(e)}")
 
 app.run()
 ass.run()
