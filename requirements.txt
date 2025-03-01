@@ -6,7 +6,7 @@ ffmpeg-python
 gitpython
 hachoir
 heroku3
-py-tgcalls==0.9.7
+py-tgcalls
 pykeyboard
 pyrogram==2.0.106
 python-dotenv
