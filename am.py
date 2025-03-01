@@ -59,13 +59,16 @@ async def play_command(client: Client, message):
 
                 if 'links' in data and len(data['links']) > 0:
                     stream = f"{data['links'][0]['url']}"
+                    plays = AudioVideoPiped(
+                stream,
+                audio_parameters=HighQualityAudio(),
+                video_parameters=MediumQualityVideo(),
+            )
                     await ass.join_group_call(
-                        message.chat.id, 
-                        InputStream(
-                            InputAudioStream(stream)
-                        ),
-                        stream_type=StreamType.LOCAL_STREAM 
-                    )
+                message.chat.id,
+                plays,
+                stream_type=StreamType().pulse_stream,
+            )
                     await message.reply(f"Playing '{song_title}' in the voice chat!")
                 else:
                     await message.reply("No links found in the response.")
