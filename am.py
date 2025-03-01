@@ -16,7 +16,7 @@ import os
 from typing import Dict, List, Union
 import json, os, random, asyncio
 import requests
-from pytgcalls import PyTgCalls, StreamType
+from pytgcalls import PyTgCalls
 from pytgcalls.types import Update
 from pytgcalls.exceptions import AlreadyJoinedError, GroupCallNotFound, NoActiveGroupCall
 from pytgcalls.types.stream import StreamAudioEnded
