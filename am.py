@@ -49,5 +49,5 @@ async def play_command(client: Client, message: Message):
 
 # Run the Pyrogram client first
 app.run()
-# We don't need ass.run() here, because app.run() is already starting the event loop
+ass.run()
 print("Bot Started")
