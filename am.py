@@ -66,33 +66,20 @@ async def start_command(client, message):
 @app.on_message(filters.command("play", prefixes=["/", "!"]))
 async def play_command(client: Client, message):
     song_title = message.text.split(" ", 1)[1] if len(message.text.split(" ")) > 1 else None
-    if song_title:
-        song_url = f"http://3.6.210.108:5000/download?query={song_title}"
-        try:
-            response = requests.get(song_url)
-            response.raise_for_status()
-            data = response.json()
-
-            # Get the OPUS format link
-            audio_link = next((link['url'] for link in data['links'] if link['format'] == 'OPUS'), None)
-            
-            if audio_link:
-                # Assuming `audio_link` is the streamable URL
-                stream = AudioVideoPiped(
-                    audio_link,  # Correctly use `audio_link` here
-                    audio_parameters=HighQualityAudio(),
-                    video_parameters=MediumQualityVideo(),
+    song_url = f"http://3.6.210.108:5000/download?query={song_title}"
+    response = requests.get(song_url)
+    response.raise_for_status()
+    data = response.json()
+    audio_link = audio_link = data['links']
+    stream = AudioVideoPiped(
+                audio_link,  
+                audio_parameters=HighQualityAudio(),
+                video_parameters=MediumQualityVideo(),
                 )
-                await ass.join_group_call(message.chat.id, stream)
-            else:
-                await message.reply("No OPUS audio link found.")
+    await ass.join_group_call(message.chat.id, stream)
+
         
-        except requests.exceptions.RequestException as e:
-            await message.reply(f"An error occurred: {str(e)}")
-        except Exception as e:
-            await message.reply(f"An unexpected error occurred: {str(e)}")
-    else:
-        await message.reply("Please provide a song title.")
+
 
 app.run()
 ass.run()
