@@ -1,15 +1,11 @@
-from pyrogram import Client, filters
 from pyrogram.errors import FloodWait
 import time
 import re
 import asyncio
-from pyrogram import Client, filters
 from typing import Callable
-from pyrogram.enums import ChatMemberStatus
 from pyrogram.types import Message
 from pyrogram import Client, filters, enums
 import random
-from pyrogram.enums import ChatMembersFilter, ChatMemberStatus, ChatType
 from pyrogram.types import (
     CallbackQuery,
     ChatMemberUpdated,
@@ -17,20 +13,8 @@ from pyrogram.types import (
     ChatPrivileges,
     Message,
 )
-from pyrogram.enums import ChatMemberStatus
-from pyrogram.errors import (
-    ChatAdminRequired,
-    InviteRequestSent,
-    UserAlreadyParticipant,
-    UserNotParticipant,
-)
-from pyrogram.types import CallbackQuery, InlineKeyboardMarkup, InlineKeyboardButton
-from pyrogram import Client, filters
-from pyrogram.enums import ChatMembersFilter
+
 import re
-from pyrogram import filters
-from pyrogram.enums import ChatAction, ChatType, MessageEntityType
-from pyrogram.types import Message
 import socket
 import json
 import os
