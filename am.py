@@ -59,10 +59,6 @@ async def play_command(client: Client, message: Message):
                     
                     # Log the URL for debugging
                     logging.info(f"Streaming URL: {stream_url}")
-
-                    # Ensure the bot is connected to the voice chat
-                    await ass.join(message.chat.id)
-
                     # Play the song in the voice chat
                     await ass.play(
                         message.chat.id,
@@ -70,7 +66,6 @@ async def play_command(client: Client, message: Message):
                             stream_url,
                             AudioQuality.HIGH,
                             VideoQuality.HD_720p,
-                            ytdlp_parameters='https://raw.githubusercontent.com/TheSpeedX/PROXY-List/refs/heads/master/http.txt',
                         ),
                     )
 
