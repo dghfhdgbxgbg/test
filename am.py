@@ -36,17 +36,26 @@ async def song_dill(client, message):
             links = data["links"]
             download_link = links[0]["url"]
             await message.reply("Downloading the song... Please wait.")
-            file_response = requests.get(download_link)
-            file_path = "song.m4a"
-            with open(file_path, "wb") as file:
-                file.write(file_response.content)
-            await message.reply_document(file_path, caption="Here is your song!")
+            fpath = None
+            for ext in ['mp3', 'm4a', 'webm']:
+                fpath = f"downloads/{song_title}.{ext}"
+                if os.path.exists(fpath):
+                    return fpath
+            res = requests.get(download_link, stream=True)
+            res.raise_for_status() 
+
+            fpath = f"downloads/{song_title}.mp3" 
+            with open(fpath, "wb") as f:
+                for chunk in res.iter_content(chunk_size=8192):
+                    if chunk:
+                        f.write(chunk)
+            await message.reply_document(fpath, caption="Here is your song!")
+
         else:
             await message.reply("Could not find any song data. Please try again later.")
     
     except Exception as e:
         await message.reply(f"An error occurred: {str(e)}")
-
 
 @app.on_message(filters.command("play", prefixes=["/", "!"]))
 async def play_command(client: Client, message: Message):
