@@ -17,22 +17,12 @@ from typing import Dict, List, Union
 import json, os, random, asyncio
 import requests
 from pytgcalls import PyTgCalls, StreamType
-from pytgcalls.exceptions import (
-    AlreadyJoinedError,
-    NoActiveGroupCall,
-    TelegramServerError,
-)
 from pytgcalls.types import Update
-from pytgcalls.types.input_stream import AudioPiped, AudioVideoPiped
-from pytgcalls.types.input_stream.quality import HighQualityAudio, MediumQualityVideo
+from pytgcalls.exceptions import AlreadyJoinedError, GroupCallNotFound, NoActiveGroupCall
 from pytgcalls.types.stream import StreamAudioEnded
 from pyrogram.errors import FloodWait, PeerIdInvalid
 import aiohttp
-from pytgcalls.types.input_stream import AudioParameters
-from pytgcalls.types.input_stream import InputAudioStream
-from pytgcalls.types.input_stream import InputStream
-from pytgcalls.types.input_stream import InputVideoStream
-from pytgcalls.types.input_stream import VideoParameters
+from pytgcalls.types import MediaStream
 
 API_ID = 27655384
 API_HASH = "a6a418b023a146e99af9ae1afd571cf4"
@@ -63,24 +53,7 @@ async def play_command(client: Client, message: Message):
 
                 if 'links' in data and len(data['links']) > 0:
                     stream_url = data['links'][0]['url']
-                    if "audio" in stream_url:
-                        plays = AudioVideoPiped(
-                            stream_url,
-                            audio_parameters=HighQualityAudio(),
-                            video_parameters=None,  # No video needed for audio-only streams
-                        )
-                    else:
-                        plays = AudioVideoPiped(
-                            stream_url,
-                            audio_parameters=HighQualityAudio(),
-                            video_parameters=MediumQualityVideo(),
-                        )
-                    
-                    await ass.join_group_call(
-                        message.chat.id,
-                        plays,
-                        stream_type=StreamType().pulse_stream,
-                    )
+                    await ass.play(message.chat.id, MediaStream(stream_url))
                     await message.reply(f"Playing `{stream_url}` in the voice chat!")
                 else:
                     await message.reply("No links found in the response.")
