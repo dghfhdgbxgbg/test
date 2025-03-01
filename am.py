@@ -49,9 +49,8 @@ async def play_command(client: Client, message):
             await message.reply("Error retrieving song data!")
             return
         data = response.json()  
-
         if 'links' in data:
-            if len(data['links']) > 1:
+            if len(data['links']) > 2:
                 for link in data['links']:
                     await message.reply(f"Link: {link['url']}")
             elif len(data['links']) == 1:
