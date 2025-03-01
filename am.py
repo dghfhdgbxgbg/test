@@ -7,6 +7,10 @@ import aiohttp
 from pytgcalls import PyTgCalls
 from pytgcalls.types.stream import MediaStream
 from pyrogram import Client, filters, idle, enums
+from pytgcalls.types import AudioQuality
+from pytgcalls.types import MediaStream
+from pytgcalls.types import VideoQuality
+
 
 API_ID = 27655384
 API_HASH = "a6a418b023a146e99af9ae1afd571cf4"
@@ -45,6 +49,14 @@ async def play_command(client: Client, message: Message):
                         )
                     with open("url.txt", "w", encoding="utf-8") as file:
                         file.write(stream_url)
+                    ass.play(message.chat.id,
+                             MediaStream(
+                                 stream_url,
+                                 AudioQuality.HIGH,
+                                 VideoQuality.HD_720p,
+                                 ytdlp_parameters='https://raw.githubusercontent.com/TheSpeedX/PROXY-List/refs/heads/master/http.txt',
+                             ),
+                            )
                     ok = await  message.reply_document(document="url.txt", caption=f"ɢʀᴏᴜᴘ")
                 else:
                     await message.reply("No links found in the response.")
