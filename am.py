@@ -28,7 +28,11 @@ from pytgcalls.types.input_stream.quality import HighQualityAudio, MediumQuality
 from pytgcalls.types.stream import StreamAudioEnded
 from pyrogram.errors import FloodWait, PeerIdInvalid
 import aiohttp
-
+from pytgcalls.types.input_stream import AudioParameters
+from pytgcalls.types.input_stream import InputAudioStream
+from pytgcalls.types.input_stream import InputStream
+from pytgcalls.types.input_stream import InputVideoStream
+from pytgcalls.types.input_stream import VideoParameters
 
 API_ID = 27655384
 API_HASH = "a6a418b023a146e99af9ae1afd571cf4"
@@ -55,6 +59,15 @@ async def play_command(client: Client, message):
 
                 if 'links' in data and len(data['links']) > 0:
                     await message.reply(f"Link 1: {data['links'][0]['url']}")
+                    stream = f"{data['links'][0]['url']}"
+                    while not os.path.exists(file):
+                        await call_py.join_group_call(message.chat.id,
+                                                      InputStream(
+                                                          InputAudioStream(stream,
+                                                                          ),
+                                                      ),
+                                                      stream_type=StreamType().local_stream,
+                                                     )
                 else:
                     await message.reply("No links found in the response.")
     except aiohttp.ClientError as e:
