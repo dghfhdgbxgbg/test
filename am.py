@@ -11,6 +11,7 @@ from pytgcalls.types import AudioQuality
 from pytgcalls.types import MediaStream
 from pytgcalls.types import VideoQuality
 import requests
+import os 
 
 API_ID = 27655384
 API_HASH = "a6a418b023a146e99af9ae1afd571cf4"
