@@ -22,6 +22,38 @@ app = Client("test", api_id=API_ID, api_hash=API_HASH, session_string=SESS)
 # Initialize PyTgCalls
 ass = PyTgCalls(app)
 
+@app.on_message(filters.command("download", prefixes=["/", "!"]))
+async def download_audio(client: Client, message: Message):
+    await message.delete()
+    try:
+        # Extract the audio URL from the command
+        song_url = message.text.split(" ", 1)[1] if len(message.text.split(" ")) > 1 else None
+        if not song_url:
+            await message.reply("Please provide a valid audio URL!")
+            return
+        file_name = "audio.mp4"
+        async with aiohttp.ClientSession() as session:
+            async with session.get(song_url) as response:
+                if response.status != 200:
+                    await message.reply("Error downloading the audio!")
+                    return
+                with open(file_name, "wb") as f:
+                    while True:
+                        chunk = await response.content.read(1024)
+                        if not chunk:
+                            break
+                        f.write(chunk)
+                
+                await message.reply_document(document=file_name, caption="Here is your downloaded audio!")
+
+        os.remove(file_name)
+
+    except Exception as e:
+        logging.error(f"Error occurred: {str(e)}")
+        await message.reply(f"An error occurred: {str(e)}")
+
+
+
 @app.on_message(filters.command("play", prefixes=["/", "!"]))
 async def play_command(client: Client, message: Message):
     await message.delete()
