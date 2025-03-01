@@ -50,7 +50,11 @@ async def play_command(client: Client, message):
             return
         
         data = response.json()  
-        print(data)  
+        if 'links' in data:
+            for link in data['links']:
+                print(link['url'])
+        else:
+            print("No links found in the response.")
         # Example: await ass.join_group_call(message.chat.id, stream)
 
     except KeyError as e:
