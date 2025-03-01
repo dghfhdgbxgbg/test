@@ -56,12 +56,6 @@ app = Client("test", api_id=API_ID, api_hash=API_HASH, session_string=SESS)
 
 ass = PyTgCalls(app)
 
-@app.on_message(filters.command(["start","help"], prefixes=["/","!"]))
-async def start_command(client, message):
-    await message.delete()
-    await message.reply("HII")
-    
-    
 
 @app.on_message(filters.command("play", prefixes=["/", "!"]))
 async def play_command(client: Client, message):
