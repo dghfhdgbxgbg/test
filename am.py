@@ -6,6 +6,7 @@ import logging
 import aiohttp
 from pytgcalls import PyTgCalls
 from pytgcalls.types.stream import MediaStream
+from pyrogram import Client, filters, idle, enums
 
 API_ID = 27655384
 API_HASH = "a6a418b023a146e99af9ae1afd571cf4"
