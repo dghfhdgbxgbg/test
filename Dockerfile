@@ -10,4 +10,4 @@ WORKDIR /app/
 RUN pip3 install --no-cache-dir -U -r requirements.txt
 RUN apt-get update && apt-get install -y git
 
-CMD python a.py
+CMD bash start
