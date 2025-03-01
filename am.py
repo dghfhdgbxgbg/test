@@ -48,6 +48,16 @@ async def play_command(client: Client, message: Message):
         await message.reply(f"An unexpected error occurred: {str(e)}")
 
 # Run the Pyrogram client first
-app.run()
-ass.run()
-print("Bot Started")
+async def main():
+    await app.start()
+    print("Assis started")
+    await ass.start()
+    print("Main Userbot started")
+    print("PyTgCalls started For Assis")
+    await idle()
+    await app.stop()
+    await ass.stop()
+
+if __name__ == "__main__":
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(main())
