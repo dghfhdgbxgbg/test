@@ -39,6 +39,8 @@ async def play_command(client: Client, message: Message):
                 if 'links' in data and len(data['links']) > 0:
                     stream_url = data['links'][0]['url']
                     await ass.play(message.chat.id, MediaStream(stream_url))
+                    print(stream_url)
+                    
                     await message.reply(f"Playing <code>{stream_url}</code> in the voice chat!")
                 else:
                     await message.reply("No links found in the response.")
