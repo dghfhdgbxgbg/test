@@ -54,7 +54,6 @@ async def play_command(client: Client, message: Message):
             return
         song_url = f"http://3.6.210.108:5000/download?query={song_title}"
 
-        logging.debug(f"Requesting song data from: {song_url}")
         async with aiohttp.ClientSession() as session:
             async with session.get(song_url) as response:
                 if response.status != 200:
@@ -62,11 +61,8 @@ async def play_command(client: Client, message: Message):
                     return
                 data = await response.json()
 
-                # Check if valid links are present in the response
                 if 'links' in data and len(data['links']) > 0:
                     stream_url = data['links'][0]['url']
-                    
-                    # Check if it's an audio-only stream and handle accordingly
                     if "audio" in stream_url:
                         plays = AudioVideoPiped(
                             stream_url,
@@ -80,7 +76,6 @@ async def play_command(client: Client, message: Message):
                             video_parameters=MediumQualityVideo(),
                         )
                     
-                    # Join the group call
                     await ass.join_group_call(
                         message.chat.id,
                         plays,
