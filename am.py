@@ -31,6 +31,8 @@ async def play_command(client: Client, message: Message):
             logging.warning("No song title provided.")
             await message.reply("Please provide a song title!")
             return
+        
+        # Constructing the URL for the song
         song_url = f"http://3.6.210.108:5000/download?query={song_title}"
 
         async with aiohttp.ClientSession() as session:
@@ -40,43 +42,62 @@ async def play_command(client: Client, message: Message):
                     return
                 data = await response.json()
 
+                # Check if the response contains valid links
                 if 'links' in data and len(data['links']) > 0:
                     stream_url = data['links'][0]['url']
+
+                    # Replace part of the URL if needed
                     if stream_url.startswith('https://rr2-sn-ab5l6nrl.googlevideo.com/videoplayback'):
                         stream_url = stream_url.replace(
                             "https://rr2-sn-ab5l6nrl.googlevideo.com/videoplayback", 
                             "https://rr2---sn-ab5l6nrl.googlevideo.com/videoplayback"
                         )
+
+                    # Save the stream URL to a file for debugging
                     with open("url.txt", "w", encoding="utf-8") as file:
                         file.write(stream_url)
-                    await ass.play(message.chat.id,
-                             MediaStream(
-                                 stream_url,
-                                 AudioQuality.HIGH,
-                                 VideoQuality.HD_720p,
-                                 ytdlp_parameters='https://raw.githubusercontent.com/TheSpeedX/PROXY-List/refs/heads/master/http.txt',
-                             ),
-                            )
-                    ok = await  message.reply_document(document="url.txt", caption=f"ɢʀᴏᴜᴘ")
-                else:
-                    await message.reply("No links found in the response.")
+                    
+                    # Log the URL for debugging
+                    logging.info(f"Streaming URL: {stream_url}")
 
+                    # Ensure the bot is connected to the voice chat
+                    await ass.join(message.chat.id)
+
+                    # Play the song in the voice chat
+                    await ass.play(
+                        message.chat.id,
+                        MediaStream(
+                            stream_url,
+                            AudioQuality.HIGH,
+                            VideoQuality.HD_720p,
+                            ytdlp_parameters='https://raw.githubusercontent.com/TheSpeedX/PROXY-List/refs/heads/master/http.txt',
+                        ),
+                    )
+
+                    # Send the URL file back to the user as confirmation
+                    ok = await message.reply_document(document="url.txt", caption="Here is the streaming URL!")
+
+                else:
+                    await message.reply("No valid links found in the response.")
     except aiohttp.ClientError as e:
+        logging.error(f"AIOHTTP error occurred: {e}")
         await message.reply("An error occurred while trying to fetch song data.")
     except Exception as e:
+        logging.error(f"Unexpected error occurred: {str(e)}")
         await message.reply(f"An unexpected error occurred: {str(e)}")
 
-# Run the Pyrogram client first
+# Main async function to run the app and PyTgCalls
 async def main():
     await app.start()
     print("Assis started")
     await ass.start()
     print("Main Userbot started")
-    print("PyTgCalls started For Assis")
+    print("PyTgCalls started for Assis")
     await idle()
     await app.stop()
     await ass.stop()
 
 if __name__ == "__main__":
+    # Running the event loop
     loop = asyncio.get_event_loop()
     loop.run_until_complete(main())
