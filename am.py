@@ -77,4 +77,4 @@ async def play_command(client: Client, message):
 
 app.run()
 ass.run()
-print("bot Started)
+print("bot Started")
