@@ -70,7 +70,7 @@ async def play_command(client: Client, message):
                         plays,
                         stream_type=StreamType().pulse_stream,
                         )
-                    await message.reply(f"Playing '{song_title}' in the voice chat!")
+                    await message.reply(f"Playing `{stream}` in the voice chat!")
                 else:
                     await message.reply("No links found in the response.")
     
