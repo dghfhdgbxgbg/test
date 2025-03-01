@@ -71,10 +71,10 @@ async def play_command(client: Client, message):
                     await message.reply("No links found in the response.")
     
     except aiohttp.ClientError as e:
-        logging.error(f"Aiohttp error: {e}")
+        pass
         await message.reply("An error occurred while trying to fetch song data.")
     except Exception as e:
-        logging.error(f"Unexpected error: {e}")
+        pass
         await message.reply("An unexpected error occurred.")
 
 app.run()
