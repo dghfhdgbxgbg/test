@@ -58,25 +58,24 @@ async def play_command(client: Client, message):
                 data = await response.json()
 
                 if 'links' in data and len(data['links']) > 0:
-                    await message.reply(f"Link 1: {data['links'][0]['url']}")
                     stream = f"{data['links'][0]['url']}"
-                    while not os.path.exists(file):
-                        await call_py.join_group_call(message.chat.id,
-                                                      InputStream(
-                                                          InputAudioStream(stream,
-                                                                          ),
-                                                      ),
-                                                      stream_type=StreamType().local_stream,
-                                                     )
+                    await ass.join_group_call(
+                        message.chat.id, 
+                        InputStream(
+                            InputAudioStream(stream)
+                        ),
+                        stream_type=StreamType.LOCAL_STREAM 
+                    )
+                    await message.reply(f"Playing '{song_title}' in the voice chat!")
                 else:
                     await message.reply("No links found in the response.")
+    
     except aiohttp.ClientError as e:
         logging.error(f"Aiohttp error: {e}")
         await message.reply("An error occurred while trying to fetch song data.")
     except Exception as e:
         logging.error(f"Unexpected error: {e}")
         await message.reply("An unexpected error occurred.")
-
 
 app.run()
 ass.run()
