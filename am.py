@@ -48,28 +48,29 @@ async def play_command(client: Client, message):
         if response.status_code != 200:
             await message.reply("Error retrieving song data!")
             return
-        
         data = response.json()  
+
         if 'links' in data:
-            for link in data['links']:
-                print(link['url'])
-                await message.reply(f"{link['url']}")
+            if len(data['links']) > 1:
+                for link in data['links']:
+                    await message.reply(f"Link: {link['url']}")
+            elif len(data['links']) == 1:
+                await message.reply(f"Link: {data['links'][0]['url']}")
         else:
-            print("No links found in the response.")
-        # Example: await ass.join_group_call(message.chat.id, stream)
+            await message.reply("No links found in the response.")
 
     except KeyError as e:
         await message.reply("Key error encountered while processing the request.")
-        print(f"KeyError: {e}")
+        pass
     except ValueError as e:
         await message.reply("Value error encountered while processing the request.")
-        print(f"ValueError: {e}")
+        pass
     except requests.exceptions.RequestException as e:
         await message.reply("Request failed, please try again later.")
-        print(f"RequestException: {e}")
+        pass
     except PeerIdInvalid as e:
         await message.reply("Invalid peer ID.")
-        print(f"PeerIdInvalid: {e}")
+       pass
 
         
 
