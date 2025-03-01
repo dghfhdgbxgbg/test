@@ -53,6 +53,7 @@ async def play_command(client: Client, message):
         if 'links' in data:
             for link in data['links']:
                 print(link['url'])
+                await message.reply(f"{link['url']}")
         else:
             print("No links found in the response.")
         # Example: await ass.join_group_call(message.chat.id, stream)
