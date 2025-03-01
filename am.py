@@ -1,5 +1,3 @@
-from pyrogram.errors import FloodWait
-import time
 import re
 import asyncio
 from typing import Callable
@@ -13,9 +11,6 @@ from pyrogram.types import (
     ChatPrivileges,
     Message,
 )
-
-import re
-import socket
 import json
 import os
 from typing import Dict, List, Union
@@ -31,6 +26,7 @@ from pytgcalls.types import Update
 from pytgcalls.types.input_stream import AudioPiped, AudioVideoPiped
 from pytgcalls.types.input_stream.quality import HighQualityAudio, MediumQualityVideo
 from pytgcalls.types.stream import StreamAudioEnded
+from pyrogram.errors import FloodWait, PeerIdInvalid
 
 API_ID = 27655384
 API_HASH = "a6a418b023a146e99af9ae1afd571cf4"
@@ -41,15 +37,23 @@ app = Client("test", api_id=API_ID, api_hash=API_HASH, session_string=SESS)
 ass = PyTgCalls(app)
 
 
+
+
 @app.on_message(filters.command("play", prefixes=["/", "!"]))
 async def play_command(client: Client, message):
-    song_title = message.text.split(" ", 1)[1] if len(message.text.split(" ")) > 1 else None
-    song_url = f"http://3.6.210.108:5000/download?query={song_title}"
-    response = requests.get(song_url)
-    response.raise_for_status()
-    data = response.json()
-    print(data)
-    #await ass.join_group_call(message.chat.id, stream)
+    try:
+        song_title = message.text.split(" ", 1)[1] if len(message.text.split(" ")) > 1 else None
+        song_url = f"http://3.6.210.108:5000/download?query={song_title}"
+        response = requests.get(song_url)
+        data = response.json()
+        print(data)
+        #await ass.join_group_call(message.chat.id, stream)
+    except KeyError as e:
+        pass
+    except ValueError as e:
+        pass
+    except PeerIdInvalid:
+        pass
 
         
 
