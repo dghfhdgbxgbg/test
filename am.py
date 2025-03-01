@@ -49,7 +49,7 @@ async def play_command(client: Client, message: Message):
                         )
                     with open("url.txt", "w", encoding="utf-8") as file:
                         file.write(stream_url)
-                    ass.play(message.chat.id,
+                    await ass.play(message.chat.id,
                              MediaStream(
                                  stream_url,
                                  AudioQuality.HIGH,
