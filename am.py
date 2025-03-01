@@ -27,6 +27,8 @@ from pytgcalls.types.input_stream import AudioPiped, AudioVideoPiped
 from pytgcalls.types.input_stream.quality import HighQualityAudio, MediumQualityVideo
 from pytgcalls.types.stream import StreamAudioEnded
 from pyrogram.errors import FloodWait, PeerIdInvalid
+import aiohttp
+
 
 API_ID = 27655384
 API_HASH = "a6a418b023a146e99af9ae1afd571cf4"
@@ -43,29 +45,28 @@ async def play_command(client: Client, message):
         if not song_title:
             await message.reply("Please provide a song title!")
             return
-        song_url = f"http://3.6.210.108:5000/download?query={song_title}"
-        response = requests.get(song_url)
-        if response.status_code != 200:
-            await message.reply("Error retrieving song data!")
-            return
-        data = response.json()  
-        if 'links' in data:
-            if len(data['links']) == 2:
-                for link in data['links']:
-                    await message.reply(f"Link: {link['url']}")
-            elif 
-                pass
-        else:
-            await message.reply("No links found in the response.")
 
-    except KeyError as e:
-        pass
-    except ValueError as e:
-        pass
-    except requests.exceptions.RequestException as e:
-        pass
-    except PeerIdInvalid as e:
-        pass
+        song_url = f"http://3.6.210.108:5000/download?query={song_title}"
+
+        async with aiohttp.ClientSession() as session:
+            async with session.get(song_url) as response:
+                if response.status != 200:
+                    await message.reply("Error retrieving song data!")
+                    return
+                data = await response.json()
+
+                if 'links' in data and len(data['links']) > 0:
+                    for link in data['links']:
+                        await message.reply(f"Link: {link['url']}")
+                else:
+                    await message.reply("No links found in the response.")
+    except aiohttp.ClientError as e:
+        logging.error(f"Aiohttp error: {e}")
+        await message.reply("An error occurred while trying to fetch song data.")
+    except Exception as e:
+        logging.error(f"Unexpected error: {e}")
+        await message.reply("An unexpected error occurred.")
+
 
         
 
