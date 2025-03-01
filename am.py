@@ -50,25 +50,21 @@ async def play_command(client: Client, message):
             return
         data = response.json()  
         if 'links' in data:
-            if len(data['links']) > 1:
+            if len(data['links']) == 2:
                 for link in data['links']:
                     await message.reply(f"Link: {link['url']}")
-            elif len(data['links']) == 2:
-                await message.reply(f"Link: {data['links'][0]['url']}")
+            elif 
+                pass
         else:
             await message.reply("No links found in the response.")
 
     except KeyError as e:
-        await message.reply("Key error encountered while processing the request.")
         pass
     except ValueError as e:
-        await message.reply("Value error encountered while processing the request.")
         pass
     except requests.exceptions.RequestException as e:
-        await message.reply("Request failed, please try again later.")
         pass
     except PeerIdInvalid as e:
-        await message.reply("Invalid peer ID.")
         pass
 
         
