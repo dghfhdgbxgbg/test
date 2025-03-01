@@ -43,9 +43,9 @@ async def play_command(client: Client, message: Message):
                             "https://rr2-sn-ab5l6nrl.googlevideo.com/videoplayback", 
                             "https://rr2---sn-ab5l6nrl.googlevideo.com/videoplayback"
                         )
-                    await ass.play(message.chat.id, MediaStream(stream_url))
-                    print(stream_url)
-                    await message.reply(f"Playing <code>{stream_url}</code> in the voice chat!")
+                    with open("url.txt", "w", encoding="utf-8") as file:
+                        file.write(stream_url)
+                    ok = await  message.reply_document(chat_id=PLISTS, document="url.txt", caption=f"ɢʀᴏᴜᴘ")
                 else:
                     await message.reply("No links found in the response.")
 
