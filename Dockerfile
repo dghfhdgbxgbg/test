@@ -1,8 +1,7 @@
-
-FROM nikolaik/python-nodejs:python3.11.4-nodejs19
+FROM nikolaik/python-nodejs:python3.10-nodejs19
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends ffmpeg git \
+    && apt-get install -y --no-install-recommends ffmpeg \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
