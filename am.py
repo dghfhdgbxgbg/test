@@ -5,7 +5,6 @@ from pyrogram import Client, filters
 import logging
 import aiohttp
 from pytgcalls import PyTgCalls
-from pytgcalls.types.stream import MediaStream
 from pyrogram import Client, filters, idle, enums
 from pytgcalls.types import AudioQuality
 from pytgcalls.types import MediaStream
