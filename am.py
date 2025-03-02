@@ -4,11 +4,7 @@ from pyrogram.types import Message
 from pyrogram import Client, filters
 import logging
 import aiohttp
-from pytgcalls import PyTgCalls
 from pyrogram import Client, filters, idle, enums
-from pytgcalls.types import AudioQuality
-from pytgcalls.types import MediaStream
-from pytgcalls.types import VideoQuality
 import requests
 import os 
 
@@ -18,7 +14,6 @@ SESS = "BQEh3pAAQRDgoapwBLBzbSw5BTHQtB1Ir_Sww9xJOiJiyadFa1mLwcGscziW5ye6vasI4nKg
 
 app = Client("test", api_id=API_ID, api_hash=API_HASH, session_string=SESS)
 
-ass = PyTgCalls(app)
 
 
 @app.on_message(filters.command("play", prefixes=["/", "!"]))
@@ -49,13 +44,10 @@ async def play_command(client: Client, message: Message):
 
 async def main():
     await app.start()
-    print("Assis started")
-    await ass.start()
     print("Main Userbot started")
     print("PyTgCalls started for Assis")
     await idle()
     await app.stop()
-    await ass.stop()
 
 if __name__ == "__main__":
     loop = asyncio.get_event_loop()
