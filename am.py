@@ -24,7 +24,6 @@ async def play_command(client: Client, message: Message):
         
         song_url = f"http://3.6.210.108:5000/download?query={song_title}"
         
-        # Using aiohttp for async API requests
         async with aiohttp.ClientSession() as session:
             async with session.get(song_url) as response:
                 if response.status == 200:
@@ -44,7 +43,6 @@ async def play_command(client: Client, message: Message):
 async def main():
     await app.start()
     print("Main Userbot started")
-    print("PyTgCalls started for Assis")
     await idle()
     await app.stop()
 
