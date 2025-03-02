@@ -29,6 +29,7 @@ async def play_command(client: Client, message: Message):
             async with session.get(song_url) as response:
                 if response.status == 200:
                     data = await response.json()
+                    print(data)
                     download_url = data.get("download_url")
                     if download_url:
                         await message.reply(f"Here is your download link: {download_url}")
