@@ -32,30 +32,21 @@ async def play_command(client: Client, message: Message):
             await message.reply("Please provide a song title!")
             return
         song_url = f"http://3.6.210.108:5000/download?query={song_title}"
-        async with aiohttp.ClientSession() as session:
-            async with session.get(song_url) as response:
-                if response.status != 200:
-                    await message.reply("Error retrieving song data!")
-                    return
-                data = await response.json()
-                if 'links' in data and len(data['links']) > 0:
-                    stream_url = data['links'][0]['url']
-                    await ass.play(
-                        message.chat.id,
-                        MediaStream(
-                            stream_url,
-                            AudioQuality.HIGH,
-                            VideoQuality.HD_720p,
-                        ),
-                    )
-                else:
-                    await message.reply("No valid links found in the response.")
-    except aiohttp.ClientError as e:
-        logging.error(f"AIOHTTP error occurred: {e}")
-        await message.reply("An error occurred while trying to fetch song data.")
+        response = requests.get(song_url)
+        if response.status_code == 200:
+            data = response.json()
+            download_url = data.get("download_url")
+            if download_url:
+                await message.reply(f"Here is your download link: {download_url}")
+            else:
+                await message.reply("Sorry, could not find the download URL.")
+        else:
+            await message.reply("Sorry, an error occurred while fetching the song.")
     except Exception as e:
-        logging.error(f"Unexpected error occurred: {str(e)}")
-        await message.reply(f"An unexpected error occurred: {str(e)}")
+        await message.reply("An error occurred while processing your request.")
+            
+                    
+
 
 async def main():
     await app.start()
