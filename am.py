@@ -13,6 +13,8 @@ SESS = "7236495063:AAF59K5HiCcDybUM5jKPZFaDuwe5BS97foc"
 
 app = Client("test", api_id=API_ID, api_hash=API_HASH, bot_token=SESS)
 
+
+
 @app.on_message(filters.command(["song", "play"]))
 async def play_command(client: Client, message: Message):
     try:
@@ -35,7 +37,23 @@ async def play_command(client: Client, message: Message):
                 
                 download_url = data.get("download_url")
                 if download_url:
-                    await message.reply(f"Here is your download link: {download_url}")
+                    # Specify the download folder and file name
+                    download_folder = "downloads"
+                    os.makedirs(download_folder, exist_ok=True)  # Create the folder if it doesn't exist
+                    file_name = f"{song_title}.mp3"  # You can use a different extension or logic to get the file type
+                    file_path = os.path.join(download_folder, file_name)
+                    
+                    # Download the file
+                    async with session.get(download_url) as file_response:
+                        file_response.raise_for_status()  # Check if the file response is OK
+                        with open(file_path, 'wb') as f:
+                            while True:
+                                chunk = await file_response.content.read(1024)
+                                if not chunk:
+                                    break
+                                f.write(chunk)
+                    
+                    await message.reply(f"Song downloaded successfully! You can find it at: {file_path}")
                 else:
                     await message.reply("Sorry, could not find the download URL.")
     except aiohttp.ClientResponseError as e:
