@@ -25,50 +25,38 @@ async def play_command(client: Client, message: Message):
         if not song_title:
             await message.reply("Please provide a song title!")
             return
-        
         song_url = f"http://3.6.210.108:5000/download?query={song_title}"
-        
         async with aiohttp.ClientSession() as session:
             async with session.get(song_url) as response:
-                # Automatically raises an exception for error status codes
                 response.raise_for_status()
-
-                # Now that we know the status is 200 (OK), we can parse the response
                 data = await response.json()
                 download_url = data.get("download_url")
                 title = data.get("title")
                 thumb = data.get("thumb")
                 url = data.get("url")
                 if download_url:
-                    # Specify the download folder and file name
                     download_folder = "downloads"
-                    os.makedirs(download_folder, exist_ok=True)  # Create the folder if it doesn't exist
-                    file_name = f"{song_title}.mp3"  # You can use a different extension or logic to get the file type
+                    os.makedirs(download_folder, exist_ok=True)
+                    file_name = f"{song_title}.mp3" 
                     file_path = os.path.join(download_folder, file_name)
                     async with session.get(download_url) as file_response:
-                        file_response.raise_for_status()  # Check if the file response is OK
+                        file_response.raise_for_status() 
                         with open(file_path, 'wb') as f:
                             while True:
                                 chunk = await file_response.content.read(1024)
                                 if not chunk:
                                     break
                                 f.write(chunk)
-                    
                     await client.send_document(message.chat.id, file_path, caption=f"Here is your song: {title}\nYoutube : {url}")
                     await asyncio.sleep(18000)  # Sleep for 5 hours
                     if os.path.exists(file_path):
                         os.remove(file_path)
-                        await message.reply(f"The file {file_name} has been deleted after 5 hours.")
                 else:
-                    await message.reply("Sorry, could not find the download URL.")
+                    pass
     except aiohttp.ClientResponseError as e:
-        # Handle HTTP errors (like 400 or 500 range)
-        logging.error(f"HTTP error occurred: {e}")
-        await message.reply(f"HTTP error occurred: {e}")
+        pass
     except Exception as e:
-        # Catch all other errors
-        logging.error(f"Error: {e}")
-        await message.reply("An error occurred while processing your request.")
+        pass
 
 async def main():
     await app.start()
