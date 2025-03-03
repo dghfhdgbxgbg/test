@@ -26,14 +26,24 @@ async def play_command(client: Client, message: Message):
         
         async with aiohttp.ClientSession() as session:
             async with session.get(song_url) as response:
+                # Automatically raises an exception for error status codes
+                response.raise_for_status()
+
+                # Now that we know the status is 200 (OK), we can parse the response
                 data = await response.json()
-                print(data)
+                print("API response data:", data)  # Debugging print to check response
+                
                 download_url = data.get("download_url")
                 if download_url:
                     await message.reply(f"Here is your download link: {download_url}")
                 else:
                     await message.reply("Sorry, could not find the download URL.")
+    except aiohttp.ClientResponseError as e:
+        # Handle HTTP errors (like 400 or 500 range)
+        logging.error(f"HTTP error occurred: {e}")
+        await message.reply(f"HTTP error occurred: {e}")
     except Exception as e:
+        # Catch all other errors
         logging.error(f"Error: {e}")
         await message.reply("An error occurred while processing your request.")
 
