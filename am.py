@@ -35,17 +35,16 @@ async def play_command(client: Client, message: Message):
 
                 # Now that we know the status is 200 (OK), we can parse the response
                 data = await response.json()
-                print("API response data:", data)  # Debugging print to check response
-                
                 download_url = data.get("download_url")
+                title = data.get("title")
+                thumb = data.get("thumb")
+                url = data.get("url")
                 if download_url:
                     # Specify the download folder and file name
                     download_folder = "downloads"
                     os.makedirs(download_folder, exist_ok=True)  # Create the folder if it doesn't exist
                     file_name = f"{song_title}.mp3"  # You can use a different extension or logic to get the file type
                     file_path = os.path.join(download_folder, file_name)
-                    
-                    # Download the file
                     async with session.get(download_url) as file_response:
                         file_response.raise_for_status()  # Check if the file response is OK
                         with open(file_path, 'wb') as f:
@@ -55,9 +54,7 @@ async def play_command(client: Client, message: Message):
                                     break
                                 f.write(chunk)
                     
-                    await message.reply(f"Song downloaded successfully! You can find it at: {file_path}")
-                    
-                    # Wait for 5 hours (18,000 seconds) and then delete the file
+                    await client.send_document(message.chat.id, file_path, caption=f"Here is your song: {title}\nYoutube : {url}")
                     await asyncio.sleep(18000)  # Sleep for 5 hours
                     if os.path.exists(file_path):
                         os.remove(file_path)
