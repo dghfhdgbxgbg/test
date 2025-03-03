@@ -2,8 +2,9 @@ import asyncio
 from pyrogram.types import Message
 from pyrogram import Client, filters, idle
 import aiohttp
-import logging
 import os
+import logging
+import asyncio
 # Setup logging for better error tracking
 logging.basicConfig(level=logging.INFO)
 
@@ -12,6 +13,7 @@ API_HASH = "a6a418b023a146e99af9ae1afd571cf4"
 SESS = "7236495063:AAF59K5HiCcDybUM5jKPZFaDuwe5BS97foc"
 
 app = Client("test", api_id=API_ID, api_hash=API_HASH, bot_token=SESS)
+
 
 
 
@@ -54,6 +56,12 @@ async def play_command(client: Client, message: Message):
                                 f.write(chunk)
                     
                     await message.reply(f"Song downloaded successfully! You can find it at: {file_path}")
+                    
+                    # Wait for 5 hours (18,000 seconds) and then delete the file
+                    await asyncio.sleep(18000)  # Sleep for 5 hours
+                    if os.path.exists(file_path):
+                        os.remove(file_path)
+                        await message.reply(f"The file {file_name} has been deleted after 5 hours.")
                 else:
                     await message.reply("Sorry, could not find the download URL.")
     except aiohttp.ClientResponseError as e:
