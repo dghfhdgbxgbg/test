@@ -13,7 +13,7 @@ SESS = "7236495063:AAF59K5HiCcDybUM5jKPZFaDuwe5BS97foc"
 
 app = Client("test", api_id=API_ID, api_hash=API_HASH, bot_token=SESS)
 
-@app.on_message(filters.command(["song", "play"]) & filters.group)
+@app.on_message(filters.command(["song", "play"]))
 async def play_command(client: Client, message: Message):
     await message.delete()
     try:
