@@ -15,8 +15,8 @@ app = Client("test", api_id=API_ID, api_hash=API_HASH, bot_token=SESS)
 
 @app.on_message(filters.command(["song", "play"]))
 async def play_command(client: Client, message: Message):
-    await message.delete()
     try:
+        await message.delete()
         song_title = message.text.split(" ", 1)[1] if len(message.text.split(" ")) > 1 else None
         if not song_title:
             await message.reply("Please provide a song title!")
