@@ -13,7 +13,7 @@ SESS = "BQEh3pAAQRDgoapwBLBzbSw5BTHQtB1Ir_Sww9xJOiJiyadFa1mLwcGscziW5ye6vasI4nKg
 
 app = Client("test", api_id=API_ID, api_hash=API_HASH, session_string=SESS)
 
-@app.on_message(filters.command(["song","play"]) & filters.group)
+@app.on_message(filters.command(["song", "play"]) & filters.group)
 async def play_command(client: Client, message: Message):
     await message.delete()
     try:
@@ -26,16 +26,13 @@ async def play_command(client: Client, message: Message):
         
         async with aiohttp.ClientSession() as session:
             async with session.get(song_url) as response:
-                if response.status == 200:
-                    data = await response.json()
-                    print(data)
-                    download_url = data.get("download_url")
-                    if download_url:
-                        await message.reply(f"Here is your download link: {download_url}")
-                    else:
-                        await message.reply("Sorry, could not find the download URL.")
+                data = await response.json()
+                print(data)
+                download_url = data.get("download_url")
+                if download_url:
+                    await message.reply(f"Here is your download link: {download_url}")
                 else:
-                    await message.reply("Sorry, an error occurred while fetching the song.")
+                    await message.reply("Sorry, could not find the download URL.")
     except Exception as e:
         logging.error(f"Error: {e}")
         await message.reply("An error occurred while processing your request.")
