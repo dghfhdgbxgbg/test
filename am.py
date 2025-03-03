@@ -9,9 +9,9 @@ logging.basicConfig(level=logging.INFO)
 
 API_ID = 27655384
 API_HASH = "a6a418b023a146e99af9ae1afd571cf4"
-SESS = "BQEh3pAAQRDgoapwBLBzbSw5BTHQtB1Ir_Sww9xJOiJiyadFa1mLwcGscziW5ye6vasI4nKgeJnuo_7nyqPyoCULFi4lnnFEI8_vl1jqe7Es41NaU8iY_Yz2D67R3zvkIM9HcXIaTQjiNNhoP1CiYsgMYLtxHkHvSs3ZkRG1k4Suflan-KMWT7vuOa_WpUwCqhHQyqb0sRtNA4ZNyhdgdNzE0RcWAJ0L00sDfDsWqLB0BqKCpEZOfFh_kVtfZkXNOz5s0zhYTitvVWKKbro9ZjTv3YPCNgaxxjvdaS8mWOfjfF2dxsxC4aoOZOOochoW09lS7jpWr_VsJ39K7Uhca9hjJ5qRtQAAAAGwYEf_AA"
+SESS = "7236495063:AAF59K5HiCcDybUM5jKPZFaDuwe5BS97foc"
 
-app = Client("test", api_id=API_ID, api_hash=API_HASH, session_string=SESS)
+app = Client("test", api_id=API_ID, api_hash=API_HASH, bot_token=SESS)
 
 @app.on_message(filters.command(["song", "play"]) & filters.group)
 async def play_command(client: Client, message: Message):
